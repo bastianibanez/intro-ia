@@ -82,7 +82,15 @@ class RecursiveDeterminant:
         return det
 
 class IterativeDeterminant:
-    pass
+    @staticmethod
+    def add_row(row1: list, row2: list):
+        if not len(row1) == len(row2):
+            raise ValueError("Rows have different len")
+        final_row = []
+        for val1, val2 in zip(row1, row2):
+            final_row.append(val1+val2)
+        return final_row
+
         
 if __name__ == '__main__': 
     # for i in range(2, 11):
@@ -92,5 +100,12 @@ if __name__ == '__main__':
     #     print(f"{matrix.get_determinant_recursive() = }", end="\n\n\n")
 
     matriz = Matrix(5)
-    determinante = matriz.get_determinant_recursive()
-    determinante2 = matriz.get_determinant_np()
+    # determinante = matriz.get_determinant_recursive()
+    # determinante2 = matriz.get_determinant_np()
+
+    m = matriz.get_matrix()
+    r1 = m[0]
+    r2 = m[1]
+    rs = IterativeDeterminant.add_row(r1, r2)
+
+    print(r1, r2, rs)
