@@ -59,9 +59,6 @@ class Matrix:
     def get_determinant_recursive(self):
         return RecursiveDeterminant.get(self)
 
-    def get_determinant_memo(self):
-        return MemoRecursiveDeterminant.get(self)
-
     # @timer
     def get_determinant_iterative(self):
         return IterativeDeterminant.get(self)
@@ -110,53 +107,6 @@ class RecursiveDeterminant:
     def get(matrix: Matrix):
         matrix_list = matrix.get_matrix()
         result = RecursiveDeterminant.recurse(matrix_list)
-        return round(result)
-
-
-class MemoRecursiveDeterminant:
-    @staticmethod
-    def _get_mult(pos: int, num: int):
-        return (-1) ** pos * num
-
-    @staticmethod
-    def _get_sub_matrix(pos: int, matrix_list: list):
-        sub_mat = []
-        for row in matrix_list[1:]:
-            sub_row = []
-            for j, val in enumerate(row):
-                if j == pos:
-                    continue
-                sub_row.append(val)
-            sub_mat.append(sub_row)
-        return sub_mat
-
-    @staticmethod
-    def recurse(matrix_list: list, memo: dict):
-        det = 0
-
-        if len(matrix_list) == 2:
-            a, b = matrix_list[0]
-            c, d = matrix_list[1]
-            return a * d - b * c
-
-        sub_matrix_dimension = len(matrix_list) - 1
-
-        for pos, num in enumerate(matrix_list[0]):
-            mult = MemoRecursiveDeterminant._get_mult(pos, num)
-            if sub_matrix_dimension in memo.keys():
-                sub_matrix = memo[sub_matrix_dimension]
-            else:
-                sub_matrix = MemoRecursiveDeterminant._get_sub_matrix(pos, matrix_list)
-                memo[sub_matrix_dimension] = sub_matrix
-            det += mult * MemoRecursiveDeterminant.recurse(sub_matrix, memo)
-        return det
-
-    @staticmethod
-    # @validate_determinant_result
-    def get(matrix: Matrix):
-        memo = {}
-        matrix_list = matrix.get_matrix()
-        result = MemoRecursiveDeterminant.recurse(matrix_list, memo)
         return round(result)
 
 
@@ -209,27 +159,18 @@ class IterativeDeterminant:
 def compare_algs(min_dimension=3, max_dimension=10):
     for i in range(min_dimension, max_dimension + 1):
         matrix = Matrix(i)
+
         recursive_start = time.time()
         matrix.get_determinant_recursive()
         recursive_end = time.time()
-
-        memo_recursive_start = time.time()
-        matrix.get_determinant_recursive()
-        memo_recursive_end = time.time()
 
         iterative_start = time.time()
         matrix.get_determinant_iterative()
         iterative_end = time.time()
 
         recursive_time = recursive_end - recursive_start
-        memo_recursive_time = memo_recursive_end - memo_recursive_start
         iterative_time = iterative_end - iterative_start
-        memo_percentage_diff = (100 * memo_recursive_time / recursive_time) - 100
-        memo_percentage_diff = (
-            f"+{memo_percentage_diff:5f}%"
-            if memo_percentage_diff >= 0
-            else f"{memo_percentage_diff:5f}%"
-        )
+
         iterative_percentage_diff = (100 * iterative_time / recursive_time) - 100
         iterative_percentage_diff = (
             f"+{iterative_percentage_diff:5f}%"
@@ -239,9 +180,6 @@ def compare_algs(min_dimension=3, max_dimension=10):
 
         print(f"Dimension: {i}X{i}")
         print(f"Recursive Time: {recursive_time}s")
-        print(
-            f"Recursive Time (with memoization): {memo_recursive_time}s ({memo_percentage_diff})"
-        )
         print(f"Iterative Time: {iterative_time}s ({iterative_percentage_diff})")
 
 
@@ -271,23 +209,7 @@ def test_recursive(min_dimension=3, max_dimension=10):
         print(f"Recursive Time: {recursive_time}s")
 
 
-def test_memo(min_dimension=3, max_dimension=10):
-    for i in range(min_dimension, max_dimension + 1):
-        matrix = Matrix(i)
-
-        memo_start = time.time()
-        matrix.get_determinant_memo()
-        memo_end = time.time()
-        memo_time = memo_end - memo_start
-
-        print(f"Dimension: {i}X{i}")
-        print(f"Recursive Time (with memoization): {memo_time}s")
-
-
 if __name__ == "__main__":
-    # compare_algs(3, 15)
     test_recursive(3, 11)
-    input("Press enter to continue...")
-    test_memo(3, 11)
     input("Press enter to continue...")
     test_iterative(3, 100)
