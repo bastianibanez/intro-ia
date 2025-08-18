@@ -59,6 +59,9 @@ class Matrix:
     def get_determinant_recursive(self):
         return RecursiveDeterminant.get(self)
 
+    def get_determinant_memo(self):
+        return MemoRecursiveDeterminant.get(self)
+
     # @timer
     def get_determinant_iterative(self):
         return IterativeDeterminant.get(self)
@@ -153,7 +156,7 @@ class MemoRecursiveDeterminant:
     def get(matrix: Matrix):
         memo = {}
         matrix_list = matrix.get_matrix()
-        result = RecursiveDeterminant.recurse(matrix_list, memo)
+        result = MemoRecursiveDeterminant.recurse(matrix_list, memo)
         return round(result)
 
 
@@ -242,5 +245,49 @@ def compare_algs(min_dimension=3, max_dimension=10):
         print(f"Iterative Time: {iterative_time}s ({iterative_percentage_diff})")
 
 
+def test_iterative(min_dimension=3, max_dimension=10):
+    for i in range(min_dimension, max_dimension + 1):
+        matrix = Matrix(i)
+
+        iterative_start = time.time()
+        matrix.get_determinant_iterative()
+        iterative_end = time.time()
+        iterative_time = iterative_end - iterative_start
+
+        print(f"Dimension: {i}X{i}")
+        print(f"Iterative Time: {iterative_time}s")
+
+
+def test_recursive(min_dimension=3, max_dimension=10):
+    for i in range(min_dimension, max_dimension + 1):
+        matrix = Matrix(i)
+
+        recursive_start = time.time()
+        matrix.get_determinant_recursive()
+        recursive_end = time.time()
+        recursive_time = recursive_end - recursive_start
+
+        print(f"Dimension: {i}X{i}")
+        print(f"Recursive Time: {recursive_time}s")
+
+
+def test_memo(min_dimension=3, max_dimension=10):
+    for i in range(min_dimension, max_dimension + 1):
+        matrix = Matrix(i)
+
+        memo_start = time.time()
+        matrix.get_determinant_memo()
+        memo_end = time.time()
+        memo_time = memo_end - memo_start
+
+        print(f"Dimension: {i}X{i}")
+        print(f"Recursive Time (with memoization): {memo_time}s")
+
+
 if __name__ == "__main__":
-    compare_algs(3, 15)
+    # compare_algs(3, 15)
+    test_recursive(3, 11)
+    input("Press enter to continue...")
+    test_memo(3, 11)
+    input("Press enter to continue...")
+    test_iterative(3, 100)
