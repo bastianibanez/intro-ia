@@ -1,20 +1,14 @@
 [project]
-name = "rec-vs-seq"
+name = "determinantes"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "bastianibanez",email = "bastian.miba@gmail.com"}
-]
+authors = [{ name = "bastianibanez", email = "bastian.miba@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.13, <4.0"
-dependencies = [
-    "numpy (>=2.3.2,<3.0.0)"
-]
+dependencies = ["numpy (>=2.3.2,<3.0.0)"]
 
 [tool.poetry]
-packages = [
-    { include = "src", from = "." }
-]
+packages = [{ include = "determinantes", from = "src" }]
 
 
 [build-system]
